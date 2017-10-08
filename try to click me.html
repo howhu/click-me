@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#myBtn {
+    position: absolute;
+    top: 250px;
+    background-color: #4CAF50;
+    user-select: none;
+}
+#reset {
+    position: absolute;
+    top: 200px;
+    background-color: #4CAF50;
+}
+</style>
+</head>
+<body>
+timer<p id="timer">10</p>
+<p>number of clicks = </p><p id="clicks">0</p>
+<button type="button" id="myBtn" onclick="myFunction()">try to click me</button>
+<button type="button" id="reset" onclick="reset()">Don't click me</button>
+
+<button type="button" id="med" onclick="setMed()">medium</button>
+<button type="button" id="hard" onclick="setHard()">hard</button>
+<button type="button" id="veryhard" onclick="setVeryHard()">very hard</button>
+
+
+<script>
+
+var buttons =[];
+var index = 0;
+var timeLeng = 10;
+var count = timeLeng;
+var counter;
+var counterHard;
+function setMed(){
+  document.getElementById("clicks").innerHTML  = 30;
+  extra = 30;
+  var e1 = document.getElementById("reset"), e2;
+  for (i=0; i < extra;i++){
+      e2 = e1.cloneNode(true);
+      buttons[index] = e2;
+      index += 1;
+      document.body.appendChild(e2);
+  }
+  myFunction()
+  timeLeng = 5;
+}
+function setHard(){
+  document.getElementById("clicks").innerHTML  = 50;
+  extra = 50;
+  var e1 = document.getElementById("reset"), e2;
+  for (i=0; i < extra;i++){
+      e2 = e1.cloneNode(true);
+      buttons[index] = e2;
+      index += 1;
+      document.body.appendChild(e2);
+  }
+  myFunction()
+}
+function setVeryHard(){
+  document.getElementById("clicks").innerHTML  = 80;
+  extra = 80;
+  var e1 = document.getElementById("reset"), e2;
+  for (i=0; i < extra;i++){
+      e2 = e1.cloneNode(true);
+      buttons[index] = e2;
+      index += 1;
+      document.body.appendChild(e2);
+  }
+  myFunction()
+}
+function myFunction() {
+  document.getElementById("med").style.visibility = 'hidden'
+  document.getElementById("hard").style.visibility = 'hidden'
+  document.getElementById("veryhard").style.visibility = 'hidden'
+  // increment click count
+	numclick =document.getElementById("clicks").innerHTML;
+	document.getElementById("clicks").innerHTML =parseInt(numclick)+1;
+
+  var e1 = document.getElementById("reset"), e2;
+	e2 = e1.cloneNode(true);
+  buttons[index] = e2;
+  index +=1;
+
+  randomizeAll();
+
+  document.body.appendChild(e2);
+
+
+  if(numclick > 20){
+  	extra = Math.floor(numclick / 10);
+    for (i=0; i < extra;i++){
+		    e2 = e1.cloneNode(true);
+  	    buttons[index] = e2;
+  	    index += 1;
+        document.body.appendChild(e2);
+    }
+    randomizeAll();
+  }
+
+  if(numclick > 100){
+  	clearInterval(counterHard);
+    timeLeng = 5;
+  	counterHard = setInterval(randomizeAll, 400);
+  }else if(numclick > 90){
+  	clearInterval(counterHard);
+  	counterHard = setInterval(randomizeAll, 600);
+  }else if(numclick > 80){
+  	clearInterval(counterHard);
+    timeLeng = 10;
+  	counterHard = setInterval(randomizeAll, 800);
+  }else if(numclick > 60){
+  	clearInterval(counterHard);
+    timeLeng = 10;
+  	counterHard = setInterval(randomizeAll, 1000);
+  }else if(numclick > 50){
+  	clearInterval(counterHard);
+    timeLeng = 10;
+  	counterHard = setInterval(randomizeAll, 2000);
+  }else if(numclick > 40){
+  	clearInterval(counterHard);
+  	counterHard = setInterval(randomizeAll, 3000);
+  } else if(numclick > 30){
+  	timeLeng = 5;
+  }else if(numclick > 10){
+  	timeLeng = 8;
+  }
+
+  //set correct button to front
+  document.getElementById("myBtn").style.zIndex = "1";
+
+  clearInterval(counter);
+  count = timeLeng;
+  document.getElementById("timer").innerHTML = count;
+  counter=setInterval(startTimer, 1000)
+
+}
+function randomizeAll(){
+	randomize("reset");
+  randomize("myBtn");
+
+  // randomize all extra buttons
+  for (idx = 0; idx < index; idx++){
+    var left =  Math.random()*(window.innerWidth-100);
+    var right = Math.random()*(window.innerHeight-25);
+  	buttons[idx].style.left=left+"px";
+    buttons[idx].style.top= right+"px";
+    buttons[idx].style.backgroundColor = getRandomColor();
+  }
+}
+function randomize(button){
+	//randomizes a given button
+    var left =  Math.random()*(window.innerWidth-100);
+    var right = Math.random()*(window.innerHeight-25);
+    document.getElementById(button).style.left = left+"px";
+    document.getElementById(button).style.top = right+"px";
+    document.getElementById(button).style.backgroundColor = getRandomColor();
+}
+
+function reset(){
+	//resets the game
+    clearInterval(counterHard);
+	clearInterval(counter);
+    timeLeng = 10;
+    count = timeLeng;
+
+	document.getElementById("clicks").innerHTML=0;
+    count = timeLeng;
+    document.getElementById("timer").innerHTML = count;
+
+    document.getElementById("myBtn").style.left = "10px"
+    document.getElementById("myBtn").style.top = "250px"
+    document.getElementById("myBtn").style.backgroundColor = "#4CAF50";
+
+    document.getElementById("reset").style.left = "10px"
+    document.getElementById("reset").style.top = "200px"
+    document.getElementById("reset").style.backgroundColor = "#4CAF50";
+
+    for (idx = 0; idx < index; idx++){
+    	buttons[idx].parentNode.removeChild(buttons[idx]);
+    }
+    index = 0;
+    document.getElementById("med").style.visibility = 'visible'
+    document.getElementById("hard").style.visibility = 'visible'
+    document.getElementById("veryhard").style.visibility = 'visible'
+}
+
+function hardTimer(){
+//timer countdown
+  count=count-1;
+  if (count <= 0){
+    clearInterval(counter);
+    reset();
+    return;
+  }
+ 	document.getElementById("timer").innerHTML=count;
+}
+
+
+function startTimer(){
+//timer countdown
+  count=count-1;
+  if (count <= 0){
+    clearInterval(counter);
+    reset();
+    return;
+  }
+ 	document.getElementById("timer").innerHTML=count;
+}
+
+function getRandomColor() {
+  // creates random color
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  //ist number >5 to make not too dark / able to read
+  color += '56789ABCDEF'[Math.floor(Math.random() * 11)];
+  for (var i = 0; i < 5; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+</script>
+
+</body>
+</html>
